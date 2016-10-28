@@ -14,10 +14,9 @@ Game::Game()
 
     //create element
     int heightPaddle(150), widthPaddle(15);
-    leftPaddle = new Paddle(0, 0, widthPaddle, heightPaddle, false);
-    rightPaddle = new Paddle(this->width() - widthPaddle, 0, widthPaddle, heightPaddle, true);
+    leftPaddle = new Paddle(0, 0, widthPaddle, heightPaddle, true);
+    rightPaddle = new Paddle(this->width() - widthPaddle, 0, widthPaddle, heightPaddle, false);
     ball = new Ball(this, 40);
-
 
     //add element to scene
     scene->addItem(leftPaddle);

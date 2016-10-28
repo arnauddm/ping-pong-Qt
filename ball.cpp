@@ -19,7 +19,7 @@ Ball::Ball(QGraphicsView *view, int size) {
     sizeView = view->size();
 
     //change color
-    this->setBrush(Qt::red);
+    this->setBrush(Qt::black);
 }
 
 void Ball::move() {

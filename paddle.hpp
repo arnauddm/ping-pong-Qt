@@ -7,7 +7,10 @@
 
 class Paddle : public QGraphicsRectItem {
 public:
-    Paddle(int x, int y, int w, int h);
+    Paddle(int x, int y, int w, int h, bool yourPaddle);
+
+private:
+    bool yourPaddle;
 
 signals:
 
