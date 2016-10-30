@@ -1,3 +1,8 @@
+/*
+ * Developped by Arnaud DE MATTEIS
+ * All Right Reserved
+ */
+
 #include "game.hpp"
 
 #include <QApplication>
