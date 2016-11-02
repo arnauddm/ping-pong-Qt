@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp \
     ball.cpp \
     paddle.cpp \
-    game.cpp
+    game.cpp \
+    limit.cpp
 
 HEADERS  += \
     ball.hpp \
     paddle.hpp \
-    game.hpp
+    game.hpp \
+    limit.hpp
 
 FORMS    +=

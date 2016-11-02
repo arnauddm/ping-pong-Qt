@@ -3,6 +3,7 @@
 
 #include "ball.hpp"
 #include "paddle.hpp"
+#include "limit.hpp"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -16,6 +17,8 @@ private:
     Ball *ball;
     Paddle *leftPaddle;
     Paddle *rightPaddle;
+    Limit *top;
+    Limit *bottom;
     QGraphicsScene *scene;
 
 signals:
