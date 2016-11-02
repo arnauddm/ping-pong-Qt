@@ -1,6 +1,9 @@
 #include "game.hpp"
 #include "limit.hpp"
 
+#define WIDTH 1000
+#define HEIGHT 640
+
 Game::Game()
 {
     //create scene & view
@@ -10,8 +13,8 @@ Game::Game()
     scene->setBackgroundBrush(Qt::white);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setFixedSize(800, 600);
-    scene->setSceneRect(0, 0, 800, 600);
+    this->setFixedSize(WIDTH, HEIGHT);
+    scene->setSceneRect(0, 0, WIDTH, HEIGHT);
 
     //create element
     int heightPaddle(150), widthPaddle(15);
