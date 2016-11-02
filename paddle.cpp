@@ -4,12 +4,17 @@ Paddle::Paddle(int x,
                int y,
                int w,
                int h,
-               bool yourPaddle) {
+               bool yourPaddle,
+               QSize sizeView) {
     //create paddle
     this->setRect(x, y, w, h);
 
     //init var
     this->yourPaddle = yourPaddle;
+
+    this->height = h;
+    this->width = w;
+    this->sizeView = sizeView;
 
     //set focusable, "select this on screen" if this is your paddle
     if(this->yourPaddle) {
@@ -29,4 +34,10 @@ void Paddle::keyPressEvent(QKeyEvent *event) {
         this->setPos(x(), y() - 15);
     else if(event->key() == Qt::Key_Down && this->yourPaddle)
         this->setPos(x(), y() + 15);
+
+    if(this->pos().y() < 0)
+        this->setPos(this->pos().x(), 0);
+
+    if(this->pos().y() + this->height > this->sizeView.height())
+        this->setPos(this->pos().x(), this->sizeView.height() - this->height);
 }
