@@ -9,11 +9,15 @@
 #include <QGraphicsScene>
 #include <QTcpSocket>
 #include <QTimer>
+#include <iostream>
 
 class Game : public QGraphicsView
 {
+    Q_OBJECT
 public:
     Game();
+
+    void connect();
 
 private:
     Ball *ball;
@@ -31,13 +35,14 @@ private:
 
     uint player;
 
+    bool play;
+
 
 signals:
 
 public slots:
     void receiveData();
     void sendData();
-    void connect();
     void disconnect();
     void errorSocket(QAbstractSocket::SocketError);
 };
