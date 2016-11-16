@@ -10,6 +10,9 @@ class Paddle : public QGraphicsRectItem {
 public:
     Paddle(int x, int y, int w, int h, bool yourPaddle, QSize sizeView);
 
+    void setPosY(uint pos);
+    qreal getPos();
+
 private:
     bool yourPaddle;
     int height, width;

@@ -41,3 +41,11 @@ void Paddle::keyPressEvent(QKeyEvent *event) {
     if(this->pos().y() + this->height > this->sizeView.height())
         this->setPos(this->pos().x(), this->sizeView.height() - this->height);
 }
+
+void Paddle::setPosY(uint pos) {
+    this->setPos(this->pos().x(), pos);
+}
+
+qreal Paddle::getPos() {
+    return this->pos().y();
+}

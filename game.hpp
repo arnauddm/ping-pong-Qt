@@ -7,6 +7,8 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QTcpSocket>
+#include <QTimer>
 
 class Game : public QGraphicsView
 {
@@ -21,9 +23,23 @@ private:
     Limit *bottom;
     QGraphicsScene *scene;
 
+    //network element
+    QTcpSocket *socket;
+    uint sizeMessage;
+
+    QTimer *timer;
+
+    uint player;
+
+
 signals:
 
 public slots:
+    void receiveData();
+    void sendData();
+    void connect();
+    void disconnect();
+    void errorSocket(QAbstractSocket::SocketError);
 };
 
 #endif // GAME_HPP

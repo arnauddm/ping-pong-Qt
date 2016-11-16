@@ -34,5 +34,29 @@ Game::Game()
     //add scene to view and show view
     this->setScene(scene);
 
+    //create timer
+    timer = new QTimer();
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendData()));
+
+    //create netork element : socket
+    socket = new QTcpSocket();
+
+    //connect socket to slots
+    QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(receiveData()));
+    QObject::connect(socket, SIGNAL(connected()), this, SLOT(connect()));
+    QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnect()));
+    QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorSocket(QAbstractSocket::SocketError)));
+
+    sizeMessage = 0;
+
 }
 
+void Game::sendData() {
+    QString data;
+    if(player == 1)
+        data = QString::number(leftPaddle->getPos());
+    else if(player == 2)
+        data = QString::number(rightPaddle->getPos());
+
+    //socket->write(data);
+}
