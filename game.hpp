@@ -18,6 +18,7 @@ public:
     Game();
 
     void connect();
+    void playing();
 
 private:
     Ball *ball;
@@ -33,9 +34,7 @@ private:
 
     QTimer *timer;
 
-    uint player;
-
-    bool play;
+    bool player1;
 
 
 signals:
