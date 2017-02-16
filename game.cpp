@@ -13,7 +13,7 @@ Game::Game()
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendData()));
 
     //create netork element : socket
-    socket = new QTcpSocket();
+    socket = new QTcpSocket(this);
 
     //connect socket to slots
     QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(receiveData()));
@@ -22,12 +22,13 @@ Game::Game()
 
     sizeMessage = 0;
 
-    this->connect();
+    connect();
+    //this->playing();
 }
 
 void Game::connect() {
     socket->abort();
-    socket->connectToHost("127.0.0.1", 12345);
+    socket->connectToHost("127.0.0.1", 50885);
     std::cout << "Successful to connect to host !" << std::endl;
 }
 
@@ -54,16 +55,14 @@ void Game::receiveData() {
     QString messageReceived;
     in >> messageReceived;
 
-    //we reset this var for the next message
-    sizeMessage = 0;
-
-    QMessageBox::information(this, "DEBUG", messageReceived);
+    std::cout << "Message reçu " << messageReceived.toStdString() << std::endl;
 
     if(messageReceived == "start")  this->playing();
     if(messageReceived == "first")  this->player1 = true;
     if(messageReceived == "second") this->player1 = false;
 
-    QMessageBox::information(this, "Test", messageReceived);
+    //we reset this var for the next message
+    sizeMessage = 0;
 }
 
 void Game::errorSocket(QAbstractSocket::SocketError error) {

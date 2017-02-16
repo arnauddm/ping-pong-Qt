@@ -30,7 +30,7 @@ private:
 
     //network element
     QTcpSocket *socket;
-    uint sizeMessage;
+    quint16 sizeMessage;
 
     QTimer *timer;
 
