@@ -19,11 +19,15 @@ Game::Game()
     QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(receiveData()));
     QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnect()));
     QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorSocket(QAbstractSocket::SocketError)));
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendPosition()));
+
 
     sizeMessage = 0;
 
     connect();
     //this->playing();
+
+    player1 = false;
 }
 
 void Game::connect() {
@@ -57,9 +61,24 @@ void Game::receiveData() {
 
     std::cout << "Message reçu " << messageReceived.toStdString() << std::endl;
 
-    if(messageReceived == "start")  this->playing();
-    if(messageReceived == "first")  this->player1 = true;
-    if(messageReceived == "second") this->player1 = false;
+    QStringList msgSplit(messageReceived.split(":"));
+
+    for(unsigned int i(0) ; i < msgSplit.size() ; i++) {
+        QString m(msgSplit.at(i));
+
+        if(m == "start") playing();
+        else if(m == "first") player1 = true;
+        else if(m == "second") player1 = false;
+        else if(m == "l" && !player1) {
+            QString pos(msgSplit.at(i + 1));
+            leftPaddle->setPosY(pos.toInt());
+            break;
+        } else if(m == "r" && player1) {
+            QString pos(msgSplit.at(i + 1));
+            rightPaddle->setPosY(pos.toInt());
+            break;
+        }
+    }
 
     //we reset this var for the next message
     sizeMessage = 0;
@@ -88,7 +107,7 @@ void Game::errorSocket(QAbstractSocket::SocketError error) {
     }
 }
 
-void Game::sendData() {
+void Game::sendData(QString &message) {
     QByteArray paquet;
     QDataStream out(&paquet, QIODevice::WriteOnly);
 
@@ -96,10 +115,7 @@ void Game::sendData() {
     out << (quint16) 0;
 
     //we write message in byte array
-    if(this->player1 == true)
-        out << this->leftPaddle->getPos();
-    else
-        out << this->rightPaddle->getPos();
+    out << message;
 
     //we select the position 0 of message
     out.device()->seek(0);
@@ -111,6 +127,8 @@ void Game::sendData() {
 }
 
 void Game::playing() {
+    timer->start(1);
+
     //create scene & view
     scene = new QGraphicsScene();
 
@@ -138,4 +156,21 @@ void Game::playing() {
 
     //add scene to view and show view
     this->setScene(scene);
+}
+
+void Game::sendPosition() {
+    QString msg;
+    int pos;
+
+    if(player1) {
+        msg.append("l");
+        pos = leftPaddle->getPos();
+    }
+    else {
+        msg.append("r");
+        pos = rightPaddle->getPos();
+    }
+
+    msg.append(":" + QString::number(pos));
+    sendData(msg);
 }

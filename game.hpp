@@ -41,9 +41,10 @@ signals:
 
 public slots:
     void receiveData();
-    void sendData();
+    void sendData(QString &message);
     void disconnect();
     void errorSocket(QAbstractSocket::SocketError);
+    void sendPosition();
 };
 
 #endif // GAME_HPP
