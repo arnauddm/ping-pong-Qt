@@ -10,7 +10,7 @@ Game::Game()
 {
     //create timer
     timer = new QTimer();
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendData()));
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendPosition()));
 
     //create netork element : socket
     socket = new QTcpSocket(this);
@@ -59,7 +59,7 @@ void Game::receiveData() {
     QString messageReceived;
     in >> messageReceived;
 
-    std::cout << "Message reçu " << messageReceived.toStdString() << std::endl;
+    //std::cout << "Message reçu " << messageReceived.toStdString() << std::endl;
 
     QStringList msgSplit(messageReceived.split(":"));
 
@@ -127,7 +127,7 @@ void Game::sendData(QString &message) {
 }
 
 void Game::playing() {
-    timer->start(1);
+    timer->start(100);
 
     //create scene & view
     scene = new QGraphicsScene();
@@ -165,6 +165,7 @@ void Game::sendPosition() {
     if(player1) {
         msg.append("l");
         pos = leftPaddle->getPos();
+        std::cout << leftPaddle->getPos() << std::endl;
     }
     else {
         msg.append("r");
@@ -173,4 +174,6 @@ void Game::sendPosition() {
 
     msg.append(":" + QString::number(pos));
     sendData(msg);
+
+    std::cout << "Position envoyée" << std::endl;
 }
