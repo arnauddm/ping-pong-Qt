@@ -72,11 +72,17 @@ void Game::receiveData() {
         else if(m == "l" && !player1) {
             QString pos(msgSplit.at(i + 1));
             leftPaddle->setPosY(pos.toInt());
-            break;
         } else if(m == "r" && player1) {
             QString pos(msgSplit.at(i + 1));
             rightPaddle->setPosY(pos.toInt());
-            break;
+            //send position
+            sendPosition();
+        } else if(m == "b") {
+            QString posX(msgSplit.at(i + 1));
+            QString posY(msgSplit.at(i + 2));
+            ball->setPos(posX.toInt(), posY.toInt());
+            //send position
+            sendPosition();
         }
     }
 
