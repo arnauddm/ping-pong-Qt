@@ -1,7 +1,7 @@
 #include "game.hpp"
 #include "limit.hpp"
 
-#include <QMessageBox>
+#include <QTime>
 
 #define WIDTH 1000
 #define HEIGHT 640
@@ -10,7 +10,6 @@ Game::Game()
 {
     //create timer
     timer = new QTimer();
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendPosition()));
 
     //create netork element : socket
     socket = new QTcpSocket(this);
@@ -19,7 +18,7 @@ Game::Game()
     QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(receiveData()));
     QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(disconnect()));
     QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorSocket(QAbstractSocket::SocketError)));
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendPosition()));
+    //QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendPosition()));
 
 
     sizeMessage = 0;
@@ -41,6 +40,7 @@ void Game::disconnect() {
 }
 
 void Game::receiveData() {
+    qDebug() << "Données reçues à :" + QTime::currentTime().toString("hh:mm:ss");
     QDataStream in(socket);
 
     if (sizeMessage == 0)
@@ -88,6 +88,9 @@ void Game::receiveData() {
 
     //we reset this var for the next message
     sizeMessage = 0;
+
+    qDebug() << "Fin du traitement à :" + QTime::currentTime().toString("hh:mm:ss");
+
 }
 
 void Game::errorSocket(QAbstractSocket::SocketError error) {
@@ -133,7 +136,7 @@ void Game::sendData(QString &message) {
 }
 
 void Game::playing() {
-    timer->start(100);
+    //timer->start(100);
 
     //create scene & view
     scene = new QGraphicsScene();
@@ -171,7 +174,6 @@ void Game::sendPosition() {
     if(player1) {
         msg.append("l");
         pos = leftPaddle->getPos();
-        std::cout << leftPaddle->getPos() << std::endl;
     }
     else {
         msg.append("r");
@@ -180,6 +182,7 @@ void Game::sendPosition() {
 
     msg.append(":" + QString::number(pos));
     sendData(msg);
+    std::cout << msg.toStdString().c_str() << std::endl;
 
-    std::cout << "Position envoyée" << std::endl;
+    //std::cout << "Position envoyée" << std::endl;
 }
