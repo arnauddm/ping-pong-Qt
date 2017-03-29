@@ -19,6 +19,7 @@ public:
 
     void connect();
     void playing();
+    void sendPosition();
 
 private:
     Ball *ball;
@@ -44,7 +45,6 @@ public slots:
     void sendData(QString &message);
     void disconnect();
     void errorSocket(QAbstractSocket::SocketError);
-    void sendPosition();
 };
 
 #endif // GAME_HPP

@@ -40,7 +40,7 @@ void Game::disconnect() {
 }
 
 void Game::receiveData() {
-    qDebug() << "Données reçues à :" + QTime::currentTime().toString("hh:mm:ss");
+    //qDebug() << "Données reçues à :" + QTime::currentTime().toString("hh:mm:ss");
     QDataStream in(socket);
 
     if (sizeMessage == 0)
@@ -59,37 +59,43 @@ void Game::receiveData() {
     QString messageReceived;
     in >> messageReceived;
 
-    //std::cout << "Message reçu " << messageReceived.toStdString() << std::endl;
+    qDebug() << messageReceived;
 
-    QStringList msgSplit(messageReceived.split(":"));
+    QStringList msgSplit(messageReceived.split("/"));
 
     for(unsigned int i(0) ; i < msgSplit.size() ; i++) {
         QString m(msgSplit.at(i));
+        QStringList sMsgSplit(m.split(":"));
+        for(unsigned int j(0) ; j < sMsgSplit.size() ; j++) {
 
-        if(m == "start") playing();
-        else if(m == "first") player1 = true;
-        else if(m == "second") player1 = false;
-        else if(m == "l" && !player1) {
-            QString pos(msgSplit.at(i + 1));
-            leftPaddle->setPosY(pos.toInt());
-        } else if(m == "r" && player1) {
-            QString pos(msgSplit.at(i + 1));
-            rightPaddle->setPosY(pos.toInt());
-            //send position
-            sendPosition();
-        } else if(m == "b") {
-            QString posX(msgSplit.at(i + 1));
-            QString posY(msgSplit.at(i + 2));
-            ball->setPos(posX.toInt(), posY.toInt());
-            //send position
-            sendPosition();
+            m = sMsgSplit.at(j);
+
+            if(m == "start") playing();
+            else if(m == "first") player1 = true;
+            else if(m == "second") player1 = false;
+            else if(m == "l" && !player1) {
+                QString pos(msgSplit.at(j + 1));
+                leftPaddle->setPosY(pos.toInt());
+            } else if(m == "r" && player1) {
+                QString pos(msgSplit.at(j + 1));
+                rightPaddle->setPosY(pos.toInt());
+            } else if(m == "b") {
+                QString posX(msgSplit.at(j + 1));
+                QString posY(msgSplit.at(j + 2));
+                ball->setPos(posX.toInt(), posY.toInt());
+                //send position
+                sendPosition();
+            }
+
         }
+
+
     }
 
     //we reset this var for the next message
     sizeMessage = 0;
 
-    qDebug() << "Fin du traitement à :" + QTime::currentTime().toString("hh:mm:ss");
+    //qDebug() << "Fin du traitement à :" + QTime::currentTime().toString("hh:mm:ss");
 
 }
 
@@ -182,7 +188,7 @@ void Game::sendPosition() {
 
     msg.append(":" + QString::number(pos));
     sendData(msg);
-    std::cout << msg.toStdString().c_str() << std::endl;
+    //qDebug() << msg + " à :" + QTime::currentTime().toString("hh:mm:ss");
 
     //std::cout << "Position envoyée" << std::endl;
 }
