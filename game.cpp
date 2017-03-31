@@ -24,7 +24,7 @@ Game::Game()
     sizeMessage = 0;
 
     connect();
-    //this->playing();
+    //playing();
 
     player1 = false;
 }
@@ -41,6 +41,7 @@ void Game::disconnect() {
 
 void Game::receiveData() {
     //qDebug() << "Données reçues à :" + QTime::currentTime().toString("hh:mm:ss");
+    std::cout << "Une donnée a été reçue" << std::endl;
     QDataStream in(socket);
 
     if (sizeMessage == 0)
@@ -59,37 +60,22 @@ void Game::receiveData() {
     QString messageReceived;
     in >> messageReceived;
 
-    qDebug() << messageReceived;
+    std::cout << messageReceived.toStdString().c_str() << std::endl;
 
-    QStringList msgSplit(messageReceived.split("/"));
-
-    for(unsigned int i(0) ; i < msgSplit.size() ; i++) {
-        QString m(msgSplit.at(i));
-        QStringList sMsgSplit(m.split(":"));
-        for(unsigned int j(0) ; j < sMsgSplit.size() ; j++) {
-
-            m = sMsgSplit.at(j);
-
-            if(m == "start") playing();
-            else if(m == "first") player1 = true;
-            else if(m == "second") player1 = false;
-            else if(m == "l" && !player1) {
-                QString pos(msgSplit.at(j + 1));
-                leftPaddle->setPosY(pos.toInt());
-            } else if(m == "r" && player1) {
-                QString pos(msgSplit.at(j + 1));
-                rightPaddle->setPosY(pos.toInt());
-            } else if(m == "b") {
-                QString posX(msgSplit.at(j + 1));
-                QString posY(msgSplit.at(j + 2));
-                ball->setPos(posX.toInt(), posY.toInt());
-                //send position
-                sendPosition();
-            }
-
+    if(messageReceived == "first") {
+        player1 = true;
+    } else if(messageReceived == "start") {
+        playing();
+    } else {
+        QStringList fSplit(messageReceived.split(":"));
+        if(player1) {
+            QString pos(fSplit.at(1));
+            rightPaddle->setPosY(pos.toInt());
+        } else {
+            QString pos(fSplit.at(0));
+            leftPaddle->setPosY(pos.toInt());
         }
-
-
+        sendPosition();
     }
 
     //we reset this var for the next message
@@ -178,17 +164,14 @@ void Game::sendPosition() {
     int pos;
 
     if(player1) {
-        msg.append("l");
+        msg.append("l:");
         pos = leftPaddle->getPos();
-    }
-    else {
-        msg.append("r");
+    } else {
+        msg.append("r:");
         pos = rightPaddle->getPos();
     }
 
-    msg.append(":" + QString::number(pos));
+    msg.append(QString::number(pos));
+    std::cout << msg.toStdString().c_str() << std::endl;
     sendData(msg);
-    //qDebug() << msg + " à :" + QTime::currentTime().toString("hh:mm:ss");
-
-    //std::cout << "Position envoyée" << std::endl;
 }
