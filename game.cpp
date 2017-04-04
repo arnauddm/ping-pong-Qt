@@ -75,6 +75,10 @@ void Game::receiveData() {
             QString pos(fSplit.at(0));
             leftPaddle->setPosY(pos.toInt());
         }
+        QString posX(fSplit.at(2));
+        QString posY(fSplit.at(3));
+        ball->setPosition(posX.toInt(), posY.toInt());
+        std::cout << "Ball maj" << std::endl;
         sendPosition();
     }
 
@@ -144,19 +148,19 @@ void Game::playing() {
     int heightPaddle(150), widthPaddle(15);
     leftPaddle = new Paddle(0, 0, widthPaddle, heightPaddle, player1, this->size());
     rightPaddle = new Paddle(this->width() - widthPaddle, 0, widthPaddle, heightPaddle, !player1, this->size());
-    ball = new Ball(this, 40);
+    ball = new Ball(100, 100, 40, 40);
     top = new Limit(0, 0, this->size().width(), 0);
     bottom = new Limit(0, this->size().height(), this->size().width(), this->size().height());
 
     //add element to scene
     scene->addItem(leftPaddle);
     scene->addItem(rightPaddle);
-    scene->addItem(ball);
     scene->addItem(top);
     scene->addItem(bottom);
+    scene->addItem(ball);
 
     //add scene to view and show view
-    this->setScene(scene);
+    setScene(scene);
 }
 
 void Game::sendPosition() {

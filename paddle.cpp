@@ -1,5 +1,7 @@
 #include "paddle.hpp"
 
+#include <iostream>
+
 Paddle::Paddle(int x,
                int y,
                int w,

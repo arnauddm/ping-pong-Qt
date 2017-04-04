@@ -1,51 +1,45 @@
 #include "ball.hpp"
 
-Ball::Ball(QGraphicsView *view, int size) {
-    //create ball
-    this->setRect(0, 0, size, size);
-    this->size = size;
-    this->setX(view->size().width() / 2);
-    this->setY(view->size().height() / 2);
+#include <QDebug>
 
-    //connect timer to function move
-    QTimer *timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), SLOT(move()));
-
-    //start timer
-    timer->start(10);
-
-    //init direction
-    //moveX = (qrand() % 2) - 1;
-    //moveY = (qrand() % 2) - 1;
-
-    moveX = -1;
-    moveY = 1;
-
-    sizeView = view->size();
-
-    //change color
-    this->setBrush(Qt::black);
-}
-
-void Ball::reset()
+Ball::Ball(const unsigned int _x, const unsigned _y, const unsigned int _w, const unsigned int _h)
 {
-    this->setPos(this->sizeView.width() / 2, this->sizeView.height() / 2);
+    width = _w;
+    height = _h;
 
+    setRect(_x, _y, width, height);
+    setBrush(Qt::black);
 }
 
-void Ball::move() {
-    this->setPos(this->x() + 2 * moveX, this->y() + 2 * moveY);
+void Ball::setX(const unsigned int pos) {
+    setPosition(pos, this->pos().y());
+}
 
-    //detect collide with item
-    QList<QGraphicsItem *> colliding_item = collidingItems();
-    for(int i(0) ; i < colliding_item.size() ; i++) {
-        if(typeid(*(colliding_item[i])) == typeid(Paddle)) {
-            this->moveX *= -1;
-        } else if(typeid(*(colliding_item[i])) == typeid(Limit)) {
-            this->moveY *= -1;
-        }
-    }
+void Ball::setY(const unsigned int pos) {
+    setPosition(this->pos().y(), pos);
+}
 
-    if(this->pos().x() < 0 || this->pos().x() > this->sizeView.width())
-        this->reset();
+void Ball::setPosition(const unsigned int posX, const unsigned int posY) {
+    setRect(posX, posY, width, height);
+    qDebug() << pos();
+}
+
+void Ball::setPosition(QPoint pos) {
+    setRect(pos.x(), pos.y(), width, height);
+}
+
+unsigned int Ball::getX(void) {
+    return pos().x();
+}
+
+unsigned int Ball::getY(void) {
+    return pos().y();
+}
+
+unsigned int Ball::getWidth(void) {
+    return width;
+}
+
+unsigned int Ball::getHeight(void) {
+    return height;
 }
